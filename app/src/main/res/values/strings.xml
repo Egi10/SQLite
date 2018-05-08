@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">SQLite</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="create_sqlite">Create SQLite</string>
+    <string name="biodata_diri">BIODATA DIRI</string>
+    <string name="simpan">SIMPAN</string>
+    <string name="update">UPDATE</string>
+    <string name="update_biodata_diri">UPDATE BIODATA DIRI</string>
+    <string name="update_sqlite">Update SQLite</string>
+</resources>
