@@ -1,5 +1,6 @@
 package id.kotlinlearning.sqlite.sqlite
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
@@ -11,13 +12,11 @@ import kotlin.collections.ArrayList
 
 class Helper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     override fun onCreate(db: SQLiteDatabase?) {
-        //!! = Untuk Null Check
-
-        db!!.execSQL(SQL_CREATE_TABLE)
+        db?.execSQL(SQL_CREATE_TABLE)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        db!!.execSQL(SQL_DROP_TABLE)
+        db?.execSQL(SQL_DROP_TABLE)
     }
 
     fun insertData(namaLengkap:String, umur:String, status:String) : Boolean {
@@ -33,12 +32,13 @@ class Helper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, 
         return true
     }
 
+    @SuppressLint("Recycle")
     fun readData() : ArrayList<Data> {
         val data = ArrayList<Data>()
 
         val db = writableDatabase
 
-        var cursor : Cursor? = null
+        val cursor: Cursor?
         try {
             cursor = db.rawQuery("SELECT * FROM "+Contract.Biodata.TABLE_NAME, null)
         }catch (e: SQLiteException){
@@ -51,8 +51,8 @@ class Helper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, 
         var umur : String
         var status : String
 
-        if (cursor!!.moveToFirst()) {
-            while (cursor.isAfterLast == false) {
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast) {
                 dataId = cursor.getInt(cursor.getColumnIndex(Contract.Biodata.COLUMNS_USER_ID))
                 namaLengkap = cursor.getString(cursor.getColumnIndex(Contract.Biodata.COLUMNS_NAMA_LENGKAP))
                 umur = cursor.getString(cursor.getColumnIndex(Contract.Biodata.COLUMNS_UMUR))
@@ -78,7 +78,7 @@ class Helper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, 
     fun updateData(data : Data) {
         val db = writableDatabase
 
-        var values = ContentValues()
+        val values = ContentValues()
         values.put(Contract.Biodata.COLUMNS_USER_ID, data.dataId)
         values.put(Contract.Biodata.COLUMNS_NAMA_LENGKAP, data.namaLengkap)
         values.put(Contract.Biodata.COLUMNS_UMUR, data.umur)

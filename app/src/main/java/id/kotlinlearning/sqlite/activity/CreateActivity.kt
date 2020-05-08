@@ -21,24 +21,22 @@ class CreateActivity : AppCompatActivity() {
         helper = Helper(this)
 
         btnSimpan.setOnClickListener {view ->
-            var namaLengkap = etNamaLengkap.text.toString()
-            var umur = etUmur.text.toString()
-            var status = etStatus.text.toString()
+            val namaLengkap = etNamaLengkap.text.toString()
+            val umur = etUmur.text.toString()
+            val status = etStatus.text.toString()
 
-            var result = helper.insertData(namaLengkap,umur, status)
-
-            Log.d("Hasil ", result.toString())
+            helper.insertData(namaLengkap,umur, status)
 
             etNamaLengkap.setText("")
             etUmur.setText("")
             etStatus.setText("")
 
             Snackbar.make(view, "Your Data Already Saved", Snackbar.LENGTH_LONG)
-                    .setAction("Ok", View.OnClickListener {
+                    .setAction("Ok") {
                         val intent = Intent(baseContext, MainActivity::class.java)
                         startActivity(intent)
                         finish()
-                    }).show()
+                    }.show()
         }
     }
 

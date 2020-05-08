@@ -1,10 +1,8 @@
 package id.kotlinlearning.sqlite.activity
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
@@ -12,15 +10,13 @@ import android.support.v7.widget.RecyclerView
 import android.view.KeyEvent
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.Toast
 import id.kotlinlearning.sqlite.R
 import id.kotlinlearning.sqlite.adapter.DataAdapter
 import id.kotlinlearning.sqlite.models.Data
 import id.kotlinlearning.sqlite.sqlite.Helper
-
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import java.util.ArrayList
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private var recyclerView : RecyclerView? = null
@@ -46,9 +42,9 @@ class MainActivity : AppCompatActivity() {
 
         helper = Helper(this)
 
-        swipeRefresh.post(Runnable {
+        swipeRefresh.post {
             loadData()
-        })
+        }
 
         swipeRefresh.setOnRefreshListener {
             swipeRefresh.isRefreshing = true
@@ -79,16 +75,16 @@ class MainActivity : AppCompatActivity() {
             val alertDialog = AlertDialog.Builder(this)
             alertDialog.setTitle("Peringatan")
             alertDialog.setMessage("Apakah Yakin Keluar Ni Jomblo ?")
-            alertDialog.setPositiveButton("Yakin", DialogInterface.OnClickListener { dialog, which ->
+            alertDialog.setPositiveButton("Yakin") { _, _ ->
                 val intent = Intent(Intent.ACTION_MAIN)
                 intent.addCategory(Intent.CATEGORY_HOME)
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
                 finish()
-            })
-            alertDialog.setNegativeButton("Tidak", DialogInterface.OnClickListener { dialog, which ->
+            }
+            alertDialog.setNegativeButton("Tidak") { dialog, _ ->
                 dialog.cancel()
-            })
+            }
             val dialog = alertDialog.create()
             dialog.show()
             return true

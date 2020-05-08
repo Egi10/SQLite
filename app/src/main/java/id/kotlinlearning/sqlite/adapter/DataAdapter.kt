@@ -1,8 +1,6 @@
 package id.kotlinlearning.sqlite.adapter
 
-import android.app.Activity
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.support.v7.widget.AppCompatImageView
 import android.support.v7.widget.AppCompatTextView
@@ -17,7 +15,7 @@ import id.kotlinlearning.sqlite.activity.UpdateActivity
 import id.kotlinlearning.sqlite.models.Data
 import id.kotlinlearning.sqlite.sqlite.Helper
 
-class DataAdapter(private val dataList : List<Data>) : RecyclerView.Adapter<DataAdapter.Holder>() {
+class DataAdapter(private val dataList : ArrayList<Data>) : RecyclerView.Adapter<DataAdapter.Holder>() {
     lateinit var helper : Helper
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -30,37 +28,38 @@ class DataAdapter(private val dataList : List<Data>) : RecyclerView.Adapter<Data
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        val Data = dataList[position]
-        holder.namaLengkap.text = Data.namaLengkap
-        holder.umur.text = "Umur : " + Data.umur
-        holder.status.text = "Status : " + Data.status
+        val data = dataList[position]
+        holder.namaLengkap.text = data.namaLengkap
+        holder.umur.text = String.format("Umur : %s", data.umur)
+        holder.status.text = String.format("Status : %s", data.status)
 
         holder.trash.setOnClickListener {view ->
             val alertDialog = AlertDialog.Builder(view.context)
             alertDialog.setTitle("Peringatan")
             alertDialog.setMessage("Apakah Yakin Menghapus Datanya Jomblo ?")
-            alertDialog.setPositiveButton("Yakin", DialogInterface.OnClickListener { dialog, which ->
-                val id = Data.dataId
+            alertDialog.setPositiveButton("Yakin") { dialog, _ ->
+                val id = data.dataId
 
                 helper = Helper(view.context)
 
                 helper.deleteData(id)
 
-                Toast.makeText(view.context, "Data Sudah Terhapus, Silahkan Refresh", Toast.LENGTH_SHORT).show()
-            })
-            alertDialog.setNegativeButton("Tidak", DialogInterface.OnClickListener { dialog, which ->
+                dataList.removeAt(position)
+                this.notifyDataSetChanged()
+
+                Toast.makeText(view.context, "Data Sudah Terhapus", Toast.LENGTH_SHORT).show()
+                dialog.dismiss()
+            }
+            alertDialog.setNegativeButton("Tidak") { dialog, _ ->
                 dialog.cancel()
-            })
+            }
             val dialog = alertDialog.create()
             dialog.show()
         }
 
         holder.card.setOnClickListener { view ->
             val intent = Intent(view.context, UpdateActivity::class.java)
-            intent.putExtra("Id", Data.dataId)
-            intent.putExtra("NamaLengkap", Data.namaLengkap)
-            intent.putExtra("Umur", Data.umur)
-            intent.putExtra("Status", Data.status)
+            intent.putExtra("data", data)
             view.context.startActivity(intent)
         }
     }

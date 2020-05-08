@@ -1,9 +1,8 @@
 package id.kotlinlearning.sqlite.activity
 
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
 import id.kotlinlearning.sqlite.R
 import id.kotlinlearning.sqlite.models.Data
@@ -19,26 +18,19 @@ class UpdateActivity : AppCompatActivity() {
 
         helper = Helper(this)
 
-        val intent = getIntent()
-        val Id = intent.getIntExtra("Id",0)
-        val NamaLengkap = intent.getStringExtra("NamaLengkap")
-        val Umur = intent.getStringExtra("Umur")
-        val Status = intent.getStringExtra("Status")
-
-        if (intent != null) {
-            etNamaLengkap.setText(NamaLengkap)
-            etUmur.setText(Umur)
-            etStatus.setText(Status)
-        } else {
-            Log.d("Bermasalah ", "Data Null")
+        val data = intent.getParcelableExtra<Data>("data")
+        data?.let {
+            etNamaLengkap.setText(it.namaLengkap)
+            etUmur.setText(it.umur)
+            etStatus.setText(it.status)
         }
 
         btnUpdate.setOnClickListener {
-            val NamaLengkap = etNamaLengkap.text.toString()
-            val Umur = etUmur.text.toString()
-            val Status = etStatus.text.toString()
+            val namaLengkap = etNamaLengkap.text.toString()
+            val umur = etUmur.text.toString()
+            val status = etStatus.text.toString()
 
-            helper.updateData(Data(Id, NamaLengkap, Umur, Status))
+            helper.updateData(Data(data.dataId, namaLengkap, umur, status))
 
             val intent = Intent(baseContext, MainActivity::class.java)
             startActivity(intent)
