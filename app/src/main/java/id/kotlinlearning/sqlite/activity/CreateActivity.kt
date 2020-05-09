@@ -4,9 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.KeyEvent
-import android.view.View
 import id.kotlinlearning.sqlite.R
 import id.kotlinlearning.sqlite.sqlite.Helper
 import kotlinx.android.synthetic.main.activity_create.*
@@ -21,16 +19,20 @@ class CreateActivity : AppCompatActivity() {
         helper = Helper(this)
 
         btnSimpan.setOnClickListener {view ->
+            // Get EditText
             val namaLengkap = etNamaLengkap.text.toString()
             val umur = etUmur.text.toString()
             val status = etStatus.text.toString()
 
+            // Save Data
             helper.insertData(namaLengkap,umur, status)
 
+            // Set EditText To Empty
             etNamaLengkap.setText("")
             etUmur.setText("")
             etStatus.setText("")
 
+            // Show Snackbar
             Snackbar.make(view, "Your Data Already Saved", Snackbar.LENGTH_LONG)
                     .setAction("Ok") {
                         val intent = Intent(baseContext, MainActivity::class.java)

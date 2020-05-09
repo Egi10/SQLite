@@ -6,40 +6,36 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.KeyEvent
 import android.view.View
-import android.widget.LinearLayout
+import android.widget.Toast
 import id.kotlinlearning.sqlite.R
 import id.kotlinlearning.sqlite.adapter.DataAdapter
 import id.kotlinlearning.sqlite.models.Data
 import id.kotlinlearning.sqlite.sqlite.Helper
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.costum_layout_empty.*
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
-    private var recyclerView : RecyclerView? = null
-    private var empty : LinearLayout? = null
-    private var adapter : DataAdapter? = null
+    private lateinit var adapter: DataAdapter
     private var data = ArrayList<Data>()
-
-    lateinit var helper : Helper
+    private lateinit var helper: Helper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
+        // OnClick In Fab
         fab.setOnClickListener {
             val intent = Intent(baseContext, CreateActivity::class.java)
             startActivity(intent)
             finish()
         }
 
-        recyclerView = findViewById(R.id.recyclerView)
-        empty = findViewById(R.id.empty)
-
+        // Deklarasi Helper
         helper = Helper(this)
 
         swipeRefresh.post {
@@ -56,18 +52,50 @@ class MainActivity : AppCompatActivity() {
     private fun loadData() {
         swipeRefresh.isRefreshing = false
 
+        // Show Data in SQLite
         data = helper.readData()
 
-        if (data.isEmpty()){
-            empty!!.visibility = View.VISIBLE
-        }
+        empty()
 
-        adapter = DataAdapter(data)
+        adapter = DataAdapter(data) {
+            val intent = Intent(this, UpdateActivity::class.java)
+            intent.putExtra("data", it)
+            startActivity(intent)
+        }
+        adapter.listenerRemove = { data, position ->
+            val alertDialog = AlertDialog.Builder(this)
+            alertDialog.setTitle("Peringatan")
+            alertDialog.setMessage("Apakah Yakin Menghapus Datanya Jomblo ?")
+            alertDialog.setPositiveButton("Yakin") { dialog, _ ->
+                val id = data.dataId
+
+                // Remove Data Id in SQLite
+                helper.deleteData(id)
+
+                this.data.removeAt(position)
+                empty()
+                adapter.notifyDataSetChanged()
+
+                Toast.makeText(this, "Data Sudah Terhapus", Toast.LENGTH_SHORT).show()
+                dialog.dismiss()
+            }
+            alertDialog.setNegativeButton("Tidak") { dialog, _ ->
+                dialog.cancel()
+            }
+            val dialog = alertDialog.create()
+            dialog.show()
+        }
         val layoutManager = LinearLayoutManager(applicationContext)
-        recyclerView!!.layoutManager = layoutManager
-        recyclerView!!.itemAnimator = DefaultItemAnimator()
-        recyclerView!!.adapter = adapter
-        adapter!!.notifyDataSetChanged()
+        recyclerView.layoutManager = layoutManager
+        recyclerView.itemAnimator = DefaultItemAnimator()
+        recyclerView.adapter = adapter
+        adapter.notifyDataSetChanged()
+    }
+
+    private fun empty() {
+        if (data.isEmpty()) {
+            empty.visibility = View.VISIBLE
+        }
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
