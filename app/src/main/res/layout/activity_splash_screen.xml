@@ -7,16 +7,15 @@
     android:gravity="center"
     tools:context=".activity.SplashScreenActivity">
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
         android:src="@drawable/ic_database" />
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="SQLite Tutorial Kotlin"
+        android:text="@string/sqlite_tutorial_kotlin"
         android:textColor="@color/colorPrimary"
         android:textSize="20sp"
         android:layout_marginTop="10dp"

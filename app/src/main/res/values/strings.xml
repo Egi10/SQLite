@@ -7,4 +7,10 @@
     <string name="update">UPDATE</string>
     <string name="update_biodata_diri">UPDATE BIODATA DIRI</string>
     <string name="update_sqlite">Update SQLite</string>
+    <string name="sqlite_tutorial">SQLite Tutorial</string>
+    <string name="nama_lengkap">Nama Lengkap</string>
+    <string name="umur">Umur</string>
+    <string name="status">Status</string>
+    <string name="sqlite_tutorial_kotlin">SQLite Tutorial Kotlin</string>
+    <string name="data_masih_kosong">DATA MASIH KOSONG</string>
 </resources>
